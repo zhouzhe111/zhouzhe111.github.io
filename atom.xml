@@ -3,11 +3,11 @@
   <title>周吉吉的博客</title>
   
   <subtitle>周吉吉的博客</subtitle>
-  <link href="http://example.com/atom.xml" rel="self"/>
+  <link href="http://zhouzhe111.github.io/atom.xml" rel="self"/>
   
-  <link href="http://example.com/"/>
+  <link href="http://zhouzhe111.github.io/"/>
   <updated>2021-03-11T05:51:07.756Z</updated>
-  <id>http://example.com/</id>
+  <id>http://zhouzhe111.github.io/</id>
   
   <author>
     <name>JJZhou</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>test</title>
-    <link href="http://example.com/2021/03/11/test/"/>
-    <id>http://example.com/2021/03/11/test/</id>
+    <link href="http://zhouzhe111.github.io/2021/03/11/test/"/>
+    <id>http://zhouzhe111.github.io/2021/03/11/test/</id>
     <published>2021-03-11T05:39:42.000Z</published>
     <updated>2021-03-11T05:51:07.756Z</updated>
     
@@ -39,8 +39,8 @@
   
   <entry>
     <title>使用hexo搭建个人博客</title>
-    <link href="http://example.com/2021/03/10/blog/"/>
-    <id>http://example.com/2021/03/10/blog/</id>
+    <link href="http://zhouzhe111.github.io/2021/03/10/blog/"/>
+    <id>http://zhouzhe111.github.io/2021/03/10/blog/</id>
     <published>2021-03-10T15:53:26.000Z</published>
     <updated>2021-03-11T11:32:53.995Z</updated>
     
@@ -51,17 +51,17 @@
     
     
     
-    <category term="blog" scheme="http://example.com/categories/blog/"/>
+    <category term="blog" scheme="http://zhouzhe111.github.io/categories/blog/"/>
     
     
-    <category term="blog" scheme="http://example.com/tags/blog/"/>
+    <category term="blog" scheme="http://zhouzhe111.github.io/tags/blog/"/>
     
   </entry>
   
   <entry>
     <title>Hello World</title>
-    <link href="http://example.com/2021/03/10/hello-world/"/>
-    <id>http://example.com/2021/03/10/hello-world/</id>
+    <link href="http://zhouzhe111.github.io/2021/03/10/hello-world/"/>
+    <id>http://zhouzhe111.github.io/2021/03/10/hello-world/</id>
     <published>2021-03-10T10:44:24.051Z</published>
     <updated>2021-03-10T16:23:06.122Z</updated>
     
@@ -74,7 +74,7 @@
     
     
     
-    <category term="java" scheme="http://example.com/tags/java/"/>
+    <category term="java" scheme="http://zhouzhe111.github.io/tags/java/"/>
     
   </entry>
   
