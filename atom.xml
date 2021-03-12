@@ -6,7 +6,7 @@
   <link href="http://zhouzhe111.github.io/atom.xml" rel="self"/>
   
   <link href="http://zhouzhe111.github.io/"/>
-  <updated>2021-03-11T14:31:30.103Z</updated>
+  <updated>2021-03-12T04:26:44.826Z</updated>
   <id>http://zhouzhe111.github.io/</id>
   
   <author>
@@ -17,19 +17,18 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>hello</title>
+    <title>小z有话说</title>
     <link href="http://zhouzhe111.github.io/2021/03/11/hello/"/>
     <id>http://zhouzhe111.github.io/2021/03/11/hello/</id>
     <published>2021-03-11T14:00:31.000Z</published>
-    <updated>2021-03-11T14:31:30.103Z</updated>
+    <updated>2021-03-12T04:26:44.826Z</updated>
     
-    <content type="html"><![CDATA[<p>hello world</p>]]></content>
+    <content type="html"><![CDATA[<h2 id="我有话说"><a href="#我有话说" class="headerlink" title="我有话说"></a>我有话说</h2><p>​    这是我的第二个博客，之前的博客实在阿里云服务器上，算是草草搭建起来的吧，内容也是写的有点点随意，由于毕设要用到服务器，老是吧服务器搞崩（脑瓜子疼），每次部署费博客老大劲了，所以决定重新撘个正经的博客，也方便以后写点优质的文章。</p><p>​    最近毕设有点忙，就索性先把这个博客的搭建过程详细分享出来，之前博客上的内容比如ftp，sprintgoot写的太随意不够严谨，先放一放，之后好好完善后再登出吧。</p><p><img src="/2021/03/11/hello/sasasas.jpg" alt="sasasas"></p>]]></content>
     
     
       
       
-    <summary type="html">&lt;p&gt;hello world&lt;/p&gt;
-</summary>
+    <summary type="html">&lt;h2 id=&quot;我有话说&quot;&gt;&lt;a href=&quot;#我有话说&quot; class=&quot;headerlink&quot; title=&quot;我有话说&quot;&gt;&lt;/a&gt;我有话说&lt;/h2&gt;&lt;p&gt;​    这是我的第二个博客，之前的博客实在阿里云服务器上，算是草草搭建起来的吧，内容也是写的有点点随意，由于毕设要用到服务</summary>
       
     
     
