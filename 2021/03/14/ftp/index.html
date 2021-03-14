@@ -21,31 +21,33 @@
     var CONFIG = {"hostname":"zhouzhe111.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="真実はいつも一つ">
-<meta property="og:type" content="website">
-<meta property="og:title" content="周吉吉的博客">
-<meta property="og:url" content="http://zhouzhe111.github.io/index.html">
+  <meta name="description" content="ftp服务器是非常实用的网上存储工具，你可以在你的ftp上为所欲为，还可以在上面多人管理文件,来看看怎么搭建你的第一台ftp吧！       前言 1.安装前的准备 2.安装vsftpd 3.配置vsftpd 4.连接     前言拥有FTP服务器的好处: 1.在本地电脑上登陆到国际互联网； 2.搜索有文件共享主机或者个人电脑(一般有专门的FTP服务器网站上公布的,上面有进入该主机或个人电脑的名称">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ftp服务器的简单搭建（centos7），并且配置虚拟用户登录">
+<meta property="og:url" content="http://zhouzhe111.github.io/2021/03/14/ftp/index.html">
 <meta property="og:site_name" content="周吉吉的博客">
-<meta property="og:description" content="真実はいつも一つ">
+<meta property="og:description" content="ftp服务器是非常实用的网上存储工具，你可以在你的ftp上为所欲为，还可以在上面多人管理文件,来看看怎么搭建你的第一台ftp吧！       前言 1.安装前的准备 2.安装vsftpd 3.配置vsftpd 4.连接     前言拥有FTP服务器的好处: 1.在本地电脑上登陆到国际互联网； 2.搜索有文件共享主机或者个人电脑(一般有专门的FTP服务器网站上公布的,上面有进入该主机或个人电脑的名称">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-14T11:17:18.000Z">
+<meta property="article:modified_time" content="2021-03-14T11:47:06.616Z">
 <meta property="article:author" content="JJZhou">
 <meta property="article:tag" content="后端、程序员">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://zhouzhe111.github.io/">
+<link rel="canonical" href="http://zhouzhe111.github.io/2021/03/14/ftp/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>周吉吉的博客</title>
+  <title>ftp服务器的简单搭建（centos7），并且配置虚拟用户登录 | 周吉吉的博客</title>
   
 
 
@@ -185,234 +187,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zhouzhe111.github.io/2021/03/11/hello/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/my.jpg">
-      <meta itemprop="name" content="JJZhou">
-      <meta itemprop="description" content="真実はいつも一つ">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="周吉吉的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/03/11/hello/" class="post-title-link" itemprop="url">小z有话说</a>
-        </h2>
-
-        <div class="post-meta">
-
-  <i class="fa fa-thumb-tack"></i>
-  <font color=7D26CD>置顶</font>
-  <span class="post-meta-divider">|</span>
-
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-03-11 22:00:31" itemprop="dateCreated datePublished" datetime="2021-03-11T22:00:31+08:00">2021-03-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-12 12:30:30" itemprop="dateModified" datetime="2021-03-12T12:30:30+08:00">2021-03-12</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/welcome/" itemprop="url" rel="index"><span itemprop="name">welcome</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2021/03/11/hello/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2021/03/11/hello/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>199</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
 
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="我有话说"><a href="#我有话说" class="headerlink" title="我有话说"></a>我有话说</h2><p>​    这是我的第二个博客，之前的博客实在阿里云服务器上，算是草草搭建起来的吧，内容也是写的有点点随意，由于毕设要用到服务器，老是把服务器搞崩（脑瓜子疼），每次部署博客费老大劲了，所以决定重新撘个正经的博客，也方便以后写点优质的文章。</p>
-<p>​    最近毕设有点忙，就索性先把这个博客的搭建过程详细分享出来，之前博客上的内容比如ftp，sprintgoot写的太随意不够严谨，先放一放，之后好好完善后再登出吧。</p>
-<p><img src="/2021/03/11/hello/sasasas.jpg"></p>
-<hr>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zhouzhe111.github.io/2021/03/10/blog/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/my.jpg">
-      <meta itemprop="name" content="JJZhou">
-      <meta itemprop="description" content="真実はいつも一つ">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="周吉吉的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/03/10/blog/" class="post-title-link" itemprop="url">使用hexo搭建个人博客</a>
-        </h2>
-
-        <div class="post-meta">
-
-  <i class="fa fa-thumb-tack"></i>
-  <font color=7D26CD>置顶</font>
-  <span class="post-meta-divider">|</span>
-
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-03-10 23:53:26" itemprop="dateCreated datePublished" datetime="2021-03-10T23:53:26+08:00">2021-03-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-11 23:09:35" itemprop="dateModified" datetime="2021-03-11T23:09:35+08:00">2021-03-11</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2021/03/10/blog/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2021/03/10/blog/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>22k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>20 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>强烈推荐！！！使用hexo，基于gitgub搭建你想要的博客。Hexo 是一个快速、简洁且高效的博客框架。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/03/10/blog/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -428,10 +206,9 @@
       <meta itemprop="name" content="周吉吉的博客">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/03/14/ftp/" class="post-title-link" itemprop="url">ftp服务器的简单搭建（centos7），并且配置虚拟用户登录</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          ftp服务器的简单搭建（centos7），并且配置虚拟用户登录
+        </h1>
 
         <div class="post-meta">
 
@@ -493,7 +270,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>ftp服务器是非常实用的网上存储工具，你可以在你的ftp上为所欲为，还可以在上面多人管理文件,来看看怎么搭建你的第一台ftp吧！</p>
+        <p>ftp服务器是非常实用的网上存储工具，你可以在你的ftp上为所欲为，还可以在上面多人管理文件,来看看怎么搭建你的第一台ftp吧！</p>
 <!--   more   -->
 
 <hr>
@@ -632,27 +409,73 @@
 <h2 id="4连接"><a href="#4-连接" class="headerlink" title="4.连接"></a>4.连接</h2><p>推荐用fz，一个灰常好用的ftp客户端，简单易上手</p>
 <p><a target="_blank" rel="noopener" href="https://filezilla-project.org/download.php?type=client">https://filezilla-project.org/download.php?type=client</a></p>
 
-      
     </div>
 
     
     
     
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>JJZhou
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://zhouzhe111.github.io/2021/03/14/ftp/" title="ftp服务器的简单搭建（centos7），并且配置虚拟用户登录">http://zhouzhe111.github.io/2021/03/14/ftp/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/zhouzhe111/zhouzhe111.github.io/">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">rss</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/11/hello/" rel="prev" title="小z有话说">
+      <i class="fa fa-chevron-left"></i> 小z有话说
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
       </footer>
+    
   </article>
   
   
   
 
 
-  
-
-
 
           </div>
           
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -699,6 +522,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E5%AE%89%E8%A3%85%E5%89%8D%E7%9A%84%E5%87%86%E5%A4%87"><span class="nav-text">1.安装前的准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E5%AE%89%E8%A3%85vsftpd"><span class="nav-text">2.安装vsftpd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E9%85%8D%E7%BD%AEvsftpd"><span class="nav-text">3.配置vsftpd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4%E8%BF%9E%E6%8E%A5"><span class="nav-text">4.连接</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

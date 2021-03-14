@@ -413,4 +413,150 @@
         <category>blog</category>
       </categories>
   </entry>
+  <entry>
+    <title>ftp服务器的简单搭建（centos7），并且配置虚拟用户登录</title>
+    <url>/2021/03/14/ftp/</url>
+    <content><![CDATA[<p>ftp服务器是非常实用的网上存储工具，你可以在你的ftp上为所欲为，还可以在上面多人管理文件,来看看怎么搭建你的第一台ftp吧！</p>
+<!--   more   -->
+
+<hr>
+<!-- toc -->
+
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#1%E5%AE%89%E8%A3%85%E5%89%8D%E7%9A%84%E5%87%86%E5%A4%87">1.安装前的准备</a></li>
+<li><a href="#2%E5%AE%89%E8%A3%85vsftpd">2.安装vsftpd</a></li>
+<li><a href="#3%E9%85%8D%E7%BD%AEvsftpd">3.配置vsftpd</a></li>
+<li><a href="#4%E8%BF%9E%E6%8E%A5">4.连接</a></li>
+</ul>
+<!-- tocstop -->
+
+<hr>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>拥有FTP服务器的好处:</p>
+<p>1.在本地电脑上登陆到国际互联网；</p>
+<p>2.搜索有文件共享主机或者个人电脑(一般有专门的FTP服务器网站上公布的,上面有进入该主机或个人电脑的名称,口令和路径)；</p>
+<p>3.当与远程主机或者对方的个人电</p>
+<p>4.脑建立连接后,用对方提供的用户名和口令登陆到该主机或对方的个人电脑；</p>
+<p>5.在远程主机或对方的个人电脑登陆成功后,就可以上传你想跟别人分享的东东或者下载别人授权共享的东东(这里的东东是指能放到电脑里去又能在显示屏上看到的东东)；</p>
+<p>6.完成工作后关闭FTP下载软件,切断连接。</p>
+<h2 id="1安装前的准备"><a href="#1-安装前的准备" class="headerlink" title="1.安装前的准备"></a>1.安装前的准备</h2><ul>
+<li>关闭防火墙或者开端口权限。一般是firewalld或者iptables。</li>
+<li>当然，如果你是阿里云这种云服务器，可以在安全组设置里面配置防火墙，就不需要在命令行去配置了—</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">systemctl stop firewalld</span><br><span class="line">systemctl disable firewalld</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>关闭sellinux</p>
+<p>sellinux是什么？</p>
+<p>SELinux 主要作用就是最大限度地减小系统中服务进程可访问的资源（最小权限原则）。</p>
+<p>所以，他的权限是非常高的，安装ftp会被他隔断权限，需要关闭</p>
+</li>
+</ul>
+<p>立即关闭</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">setenforce 0</span><br></pre></td></tr></table></figure>
+
+<p>重启也关闭</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vi &#x2F;etc&#x2F;selinux&#x2F;config</span><br></pre></td></tr></table></figure>
+
+<p>修改</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SELINUX&#x3D;disabled</span><br></pre></td></tr></table></figure>
+
+<p>查看是否关闭</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">getenforce</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>（注意！！！）SELINUX是系统自带的，必须进行下面的设置，关掉SELINUX对ftp的限制，否则ftp会没有权限</p>
+<p>setsebool -P allow_ftpd_anon_write on<br>setsebool -P allow_ftpd_full_access on</p>
+</blockquote>
+<h2 id="2安装vsftpd"><a href="#2-安装vsftpd" class="headerlink" title="2.安装vsftpd"></a>2.安装vsftpd</h2><p>很简单一句话</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum install -y vsftpd</span><br></pre></td></tr></table></figure>
+
+<p>立即启动</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">systemctl start vsftpd</span><br></pre></td></tr></table></figure>
+
+<p>跟随系统启动而启动</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">systemctl enable vsftpd</span><br></pre></td></tr></table></figure>
+
+<h2 id="3配置vsftpd"><a href="#3-配置vsftpd" class="headerlink" title="3.配置vsftpd"></a>3.配置vsftpd</h2><blockquote>
+<p>（注意！！！）所有配置文件中每行必须顶格，末尾不能有空格</p>
+<p>（注意！！！）所有配置文件中每行必须顶格，末尾不能有空格</p>
+<p>（注意！！！）所有配置文件中每行必须顶格，末尾不能有空格</p>
+</blockquote>
+<ul>
+<li>创建vsftpd使用的系统用户，主目录为/home/vsftpd，禁止ssh登录。创建之后所有虚拟用户使用这个系统用户访问文件。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">useradd vsftpd -d &#x2F;home&#x2F;vsftpd -s &#x2F;bin&#x2F;false</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>创建虚拟用户主目录，比如虚拟用户叫ftp1，执行下面的命令。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir -p &#x2F;home&#x2F;vsftpd&#x2F;ftp1</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>创建这个虚拟用户</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vi &#x2F;etc&#x2F;vsftpd&#x2F;loginusers.conf</span><br></pre></td></tr></table></figure>
+
+<p>增加  //单行为用户名，双行为密码，而且用户名必须和对应的配置文件重名</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ftp1</span><br><span class="line">123456</span><br></pre></td></tr></table></figure>
+
+<p>这样就创建了ftp1这个虚拟用户，密码为123456</p>
+<ul>
+<li>根据这个文件创建数据库文件，db_load是centos自带的转换工具</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">db_load -T -t <span class="built_in">hash</span> -f /etc/vsftpd/loginusers.conf /etc/vsftpd/loginusers.db</span><br><span class="line">chmod 600 /etc/vsftpd/loginusers.db   <span class="comment">#赋予权限</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>启用这个数据库文件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vi &#x2F;etc&#x2F;pam.d&#x2F;vsftpd</span><br></pre></td></tr></table></figure>
+
+<p>注释掉所有内容后，增加下面的内容 // 把用户加到pam中进行登录验证</p>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">auth    sufficient /lib64/security/pam_userdb.<span class="keyword">so</span> db=/etc/vsftpd/loginusers</span><br><span class="line">account sufficient /lib64/security/pam_userdb.<span class="keyword">so</span> db=/etc/vsftpd/loginusers</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>创建虚拟用户配置文件  //自定义</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir &#x2F;etc&#x2F;vsftpd&#x2F;userconf</span><br></pre></td></tr></table></figure>
+
+<p>这里的文件名称必须与虚拟用户名一致</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vi &#x2F;etc&#x2F;vsftpd&#x2F;userconf&#x2F;ftp1</span><br></pre></td></tr></table></figure>
+
+<p>增加下面的内容 </p>
+<blockquote>
+<p>（注意！！！） 赋予虚拟用户相应权限，如果缺省了权限，这个虚拟用户就没有相应权限</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#浏览FTP目录和下载</span></span><br><span class="line">anon_world_readable_only=NO</span><br><span class="line"><span class="comment">#允许上传</span></span><br><span class="line">anon_upload_enable=YES</span><br><span class="line"><span class="comment">#允许建立和删除目录</span></span><br><span class="line">anon_mkdir_write_enable=YES</span><br><span class="line"><span class="comment">#允许改名和删除文件</span></span><br><span class="line">anon_other_write_enable=YES</span><br><span class="line"><span class="comment">#指定虚拟用户在系统用户下面的路径</span></span><br><span class="line">local_root=/home/vsftpd/ftp1/</span><br></pre></td></tr></table></figure>
+
+<p>设定主目录为/home/vsftpd/ftp1     //这个是ftp登陆上来的主目录</p>
+<blockquote>
+<p>（注意！！！）这个目录默认是root所有，ftp登录为虚拟用户映射的普通用户，没有相应权限，必须修改这个根目录可以被其他用户所修改的权限， 777，这个数字相关解释可以自行百度，简单来说就是赋予所有人都可以读写以及执行这个目录的权限</p>
+<p>chmod -R 777 /home/vsftpd/</p>
+</blockquote>
+<ul>
+<li>最后修改主配置文件</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vi /etc/vsftpd/vsftpd.conf</span><br></pre></td></tr></table></figure>
+
+<p>更改</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">anonymous_enable=NO  <span class="comment">#禁止匿名用户登录</span></span><br></pre></td></tr></table></figure>
+
+<p>去掉注释</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">chroot_local_user=YES  <span class="comment">#禁止用户访问除主目录以外的目录</span></span><br><span class="line">ascii_upload_enable=YES <span class="comment">#设定支持ASCII模式的上传和下载功能</span></span><br><span class="line">ascii_download_enable=YES <span class="comment">#设定支持ASCII模式的上传和下载功能</span></span><br></pre></td></tr></table></figure>
+
+<p>增加</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">guest_enable=YES  <span class="comment">#启动虚拟用户</span></span><br><span class="line">guest_username=vsftpd  <span class="comment">#虚拟用户使用的系统用户名</span></span><br><span class="line">user_config_dir=/etc/vsftpd/userconf  <span class="comment">#虚拟用户使用的配置文件目录</span></span><br><span class="line">allow_writeable_chroot=YES  <span class="comment">#最新版的vsftpd为了安全必须用户主目录（也就是/home/vsftpd/ftp1）没有写权限，才能登录，或者使用</span></span><br><span class="line"><span class="comment">#allow_writeable_chroot=YES，也就是说默认是不能写的，你没有配置这个就不能写</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>最后重启服务使配置生效</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">systemctl start vsftpd      //启动</span><br><span class="line">systemctl restart vsftpd    //重启</span><br><span class="line">systemctl status vsftpd     //查看状态</span><br></pre></td></tr></table></figure>
+
+<h2 id="4连接"><a href="#4-连接" class="headerlink" title="4.连接"></a>4.连接</h2><p>推荐用fz，一个灰常好用的ftp客户端，简单易上手</p>
+<p><a href="https://filezilla-project.org/download.php?type=client">https://filezilla-project.org/download.php?type=client</a></p>
+]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+  </entry>
 </search>
