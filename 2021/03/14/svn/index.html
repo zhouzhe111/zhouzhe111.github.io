@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhouzhe111.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="个人非常喜欢的文件共享、版本控制服务器，强烈推荐团队合作时使用，大大减少不必要的文件传输带来的麻烦。svn，肯定适合你~~">
+<meta property="og:type" content="article">
+<meta property="og:title" content="svn服务器的搭建（centos7）">
+<meta property="og:url" content="http://zhouzhe111.github.io/2021/03/14/svn/index.html">
+<meta property="og:site_name" content="周吉吉的博客">
+<meta property="og:description" content="个人非常喜欢的文件共享、版本控制服务器，强烈推荐团队合作时使用，大大减少不必要的文件传输带来的麻烦。svn，肯定适合你~~">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://zhouzhe111.github.io/2021/03/14/svn/1924">
+<meta property="og:image" content="https://img2018.cnblogs.com/blog/1608463/201905/1608463-20190528115050747-584463236.png">
+<meta property="og:image" content="http://zhouzhe111.github.io/2021/03/14/svn/1608463-20190528115217793-754927928.png">
+<meta property="og:image" content="http://zhouzhe111.github.io/2021/03/14/svn/1608463-20190528115404201-1593471956.png">
+<meta property="og:image" content="http://zhouzhe111.github.io/2021/03/14/svn/1608463-20190528120008423-631669417.png">
+<meta property="og:image" content="http://zhouzhe111.github.io/2021/03/14/svn/1608463-20190528120647098-2073087851.png">
+<meta property="og:image" content="http://zhouzhe111.github.io/2021/03/14/svn/clip_image002.jpg">
+<meta property="og:image" content="http://zhouzhe111.github.io/2021/03/14/svn/clip_image004.jpg">
+<meta property="og:image" content="http://zhouzhe111.github.io/2021/03/14/svn/clip_image006.jpg">
+<meta property="og:image" content="http://zhouzhe111.github.io/2021/03/14/svn/clip_image008.jpg">
+<meta property="og:image" content="http://zhouzhe111.github.io/2021/03/14/svn/image-20210314201246127.png">
+<meta property="article:published_time" content="2021-03-14T11:56:51.000Z">
+<meta property="article:modified_time" content="2021-03-14T12:14:16.360Z">
+<meta property="article:author" content="JJZhou">
+<meta property="article:tag" content="后端、程序员">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://zhouzhe111.github.io/2021/03/14/svn/1924">
+
+<link rel="canonical" href="http://zhouzhe111.github.io/2021/03/14/svn/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>svn服务器的搭建（centos7） | 周吉吉的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="周吉吉的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">周吉吉的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">周吉吉的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/zhouzhe111/zhouzhe111.github.io/" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zhouzhe111.github.io/2021/03/14/svn/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/my.jpg">
+      <meta itemprop="name" content="JJZhou">
+      <meta itemprop="description" content="真実はいつも一つ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="周吉吉的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          svn服务器的搭建（centos7）
+        </h1>
+
+        <div class="post-meta">
+
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-14 19:56:51 / 修改时间：20:14:16" itemprop="dateCreated datePublished" datetime="2021-03-14T19:56:51+08:00">2021-03-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/03/14/svn/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/03/14/svn/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>个人非常喜欢的文件共享、版本控制服务器，强烈推荐团队合作时使用，大大减少不必要的文件传输带来的麻烦。svn，肯定适合你~~</p>
+<span id="more"></span>
+
+<hr>
+<!-- toc -->
+
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a><ul>
+<li><a href="#1-%E6%A3%80%E6%9F%A5%E7%B3%BB%E7%BB%9F%E6%98%AF%E5%90%A6%E5%B7%B2%E7%BB%8F%E5%AE%89%E8%A3%85%E5%A6%82%E6%9E%9C%E5%AE%89%E8%A3%85%E5%B0%B1%E5%8D%B8%E8%BD%BD">1、检查系统是否已经安装如果安装就卸载</a><ul>
+<li><a href="#%E6%A3%80%E6%9F%A5">检查：</a></li>
+<li><a href="#%E5%8D%B8%E8%BD%BD">卸载：</a></li>
+</ul>
+</li>
+<li><a href="#2-%E5%AE%89%E8%A3%85">2、安装</a></li>
+<li><a href="#3-%E5%BB%BA%E7%AB%8Bsvn%E5%BA%93%E6%96%87%E4%BB%B6%E4%BD%8D%E7%BD%AE%E5%8F%AF%E8%87%AA%E7%94%B1">3、建立SVN库（文件位置可自由）</a><ul>
+<li><a href="#%E5%88%9B%E5%BB%BA%E4%BB%93%E5%BA%93%E6%96%87%E4%BB%B6%E5%A4%B9">创建仓库文件夹：</a></li>
+<li><a href="#%E7%94%A8svn%E7%AE%A1%E7%90%86%E5%91%98%E8%BA%AB%E4%BB%BD%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E4%BB%93%E5%BA%93">用svn管理员身份创建一个仓库：</a></li>
+</ul>
+</li>
+<li><a href="#4-%E6%9D%83%E9%99%90%E9%85%8D%E7%BD%AE">4、权限配置</a><ul>
+<li><a href="#1authz%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE%E8%AE%BE%E7%BD%AE%E5%93%AA%E4%BA%9B%E7%94%A8%E6%88%B7%E5%8F%AF%E4%BB%A5%E8%AE%BF%E9%97%AE%E5%93%AA%E4%BA%9B%E7%9B%AE%E5%BD%95%E8%BF%9B%E5%85%A5varsvnrepositoryconf%E4%B8%8A%E9%9D%A2%E7%94%9F%E6%88%90%E7%9A%84%E6%96%87%E4%BB%B6%E5%A4%B9%E4%B8%8B">（1）authz文件配置，设置哪些用户可以访问哪些目录：进入/var/svn/repository/conf上面生成的文件夹下，</a></li>
+<li><a href="#2passwd%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE-%E4%B8%BB%E8%A6%81%E6%B7%BB%E5%8A%A0%E7%94%A8%E6%88%B7%E5%90%8D%E5%92%8C%E5%AF%86%E7%A0%81%E4%BE%8B%E5%A6%82">（2）passwd文件配置 主要添加用户名和密码，例如：：</a></li>
+<li><a href="#3svnserveconf-%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE-%E9%85%8D%E7%BD%AE%E8%AE%BF%E9%97%AE%E6%9D%83%E9%99%90">（3）svnserve.conf 文件配置 配置访问权限</a></li>
+</ul>
+</li>
+<li><a href="#5-%E5%90%AF%E5%8A%A8svn">5、启动svn</a></li>
+<li><a href="#6%E6%9F%A5%E7%9C%8Bsvn%E8%BF%9B%E7%A8%8B">6.查看svn进程</a></li>
+<li><a href="#7%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5">7.客户端连接</a><ul>
+<li><a href="#1-%E5%AE%89%E8%A3%85svn%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%80%E8%B7%AFnext%E5%8D%B3%E5%8F%AF">1、 安装svn客户端，一路next即可</a></li>
+<li><a href="#2-%E6%96%B0%E5%BB%BA%E6%96%87%E4%BB%B6%E5%A4%B9%E5%8F%B3%E9%94%AE-check-out">2、 新建文件夹，右键 check out</a></li>
+<li><a href="#3-%E8%BE%93%E5%85%A5-url">3、 输入 url =》</a></li>
+<li><a href="#4-%E7%94%A8%E6%88%B7%E5%90%8D%E5%AF%86%E7%A0%81%E9%83%BD%E6%98%AF-usst">4、 用户名密码都是 usst</a></li>
+<li><a href="#5-svn%E6%93%8D%E4%BD%9C">5、 Svn操作</a><ul>
+<li><a href="#1-update-%E6%9B%B4%E6%96%B0%E5%88%B0%E6%9C%AC%E5%9C%B0">1、 update =》更新到本地</a></li>
+<li><a href="#2-commit-%E4%B8%8A%E4%BC%A0%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8">2、 commit =》上传到服务器</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+
+<hr>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><strong>优点：</strong></p>
+<p><strong>1.svn优点：集中式管理，管理方式在服务端配置好，客户端只需要同步提交即可，使用方便，操作简单，很容易就可以上手</strong></p>
+<p><strong>2.在服务端统一控制好访问权限，利用代码的安全管理。</strong></p>
+<p><strong>3.所有的代码以服务端为准，代码一致性高。</strong></p>
+<p><strong>缺点：</strong></p>
+<p><strong>1.所有操作都需要通过服务端进行同步，这会导致服务器性能要求比较高。如果服务器宕机了就无法提交代码了。</strong></p>
+<p><strong>2.分支管理不灵活，svn分支是一个完整的目录，且这个目录拥有完整的实际文件，这些操作都是在服务端进行同步的，</strong></p>
+<p>  <strong>不是本 地化操作，如果要删除分支，也是需要将远程的分支进行删除，这会导致大家都得同步</strong></p>
+<p><strong>3.需要连网，如果无法连接到服务器就无法提交代码</strong></p>
+<h2 id="1-检查系统是否已经安装如果安装就卸载"><a href="#1、检查系统是否已经安装如果安装就卸载" class="headerlink" title="1、检查系统是否已经安装如果安装就卸载"></a>1、检查系统是否已经安装如果安装就卸载</h2><h3 id="检查"><a href="#检查：" class="headerlink" title="检查："></a>检查：</h3><blockquote>
+<p>svnserve –version</p>
+</blockquote>
+<h3 id="卸载"><a href="#卸载：" class="headerlink" title="卸载："></a>卸载：</h3><blockquote>
+<p>yum remove subversion</p>
+</blockquote>
+<h2 id="2-安装"><a href="#2、安装" class="headerlink" title="2、安装"></a>2、安装</h2><blockquote>
+<p>yum install subversion</p>
+</blockquote>
+<h2 id="3-建立svn库文件位置可自由"><a href="#3、建立SVN库（文件位置可自由）" class="headerlink" title="3、建立SVN库（文件位置可自由）"></a>3、建立SVN库（文件位置可自由）</h2><h3 id="创建仓库文件夹"><a href="#创建仓库文件夹：" class="headerlink" title="创建仓库文件夹："></a>创建仓库文件夹：</h3><blockquote>
+<p>mkdir -p /var/svn/repository/</p>
+</blockquote>
+<h3 id="用svn管理员身份创建一个仓库"><a href="#用svn管理员身份创建一个仓库：" class="headerlink" title="用svn管理员身份创建一个仓库："></a>用svn管理员身份创建一个仓库：</h3><blockquote>
+<p>svnadmin create /var/svn/repository/</p>
+</blockquote>
+<p>执行上面的命令后，自动建立repositories库，查看/var/svn/repository/ 文件夹发现包含了conf, db,format,hooks, locks, README.txt等文件，说明一个SVN库已经建立。</p>
+<p><img src="/2021/03/14/svn/1924"></p>
+<h2 id="4-权限配置"><a href="#4、权限配置" class="headerlink" title="4、权限配置"></a>4、权限配置</h2><h3 id="1authz文件配置设置哪些用户可以访问哪些目录进入varsvnrepositoryconf上面生成的文件夹下"><a href="#（1）authz文件配置，设置哪些用户可以访问哪些目录：进入-var-svn-repository-conf上面生成的文件夹下，" class="headerlink" title="（1）authz文件配置，设置哪些用户可以访问哪些目录：进入/var/svn/repository/conf上面生成的文件夹下，"></a>（1）authz文件配置，设置哪些用户可以访问哪些目录：进入/var/svn/repository/conf上面生成的文件夹下，</h3><blockquote>
+<p>vi authz</p>
+</blockquote>
+<p>进行配置 authz文件配置，vi authz,向authz文件追加以下内容,左边是用户名，右边是读写权限(r、w、rw、no access),</p>
+<blockquote>
+<p>#一般 ，追加</p>
+<p>[/]   </p>
+<p>usst=rw</p>
+<p>#这两行即可，格式：用户名=rw (r =&gt; read w =&gt; write)</p>
+</blockquote>
+<p>每个目录的读写权限都可精细控制，例如：</p>
+<p> <img src="https://img2018.cnblogs.com/blog/1608463/201905/1608463-20190528115050747-584463236.png" alt="img"></p>
+<h3 id="2passwd文件配置-主要添加用户名和密码例如"><a href="#（2）passwd文件配置-主要添加用户名和密码，例如：：" class="headerlink" title="（2）passwd文件配置 主要添加用户名和密码，例如：："></a>（2）passwd文件配置 主要添加用户名和密码，例如：：</h3><blockquote>
+<p>vi passwd</p>
+</blockquote>
+<blockquote>
+<p>追加</p>
+<p>usst=usst</p>
+<p>格式：用户名=密码</p>
+</blockquote>
+<p><img src="/2021/03/14/svn/1608463-20190528115217793-754927928.png"></p>
+<h3 id="3svnserveconf-文件配置-配置访问权限"><a href="#（3）svnserve-conf-文件配置-配置访问权限" class="headerlink" title="（3）svnserve.conf 文件配置 配置访问权限"></a>（3）svnserve.conf 文件配置 配置访问权限</h3><blockquote>
+<p>vi svnserve.conf</p>
+</blockquote>
+<p>追加到[general]下（或者取消注释，改写）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">anon-access = none  <span class="comment">#不允许匿名登录</span></span><br><span class="line"></span><br><span class="line">auth-access = write   <span class="comment">#写权限</span></span><br><span class="line"></span><br><span class="line">password-db = passwd  <span class="comment">#指定用户名密码配置文件</span></span><br><span class="line"></span><br><span class="line">authz-db = authz  <span class="comment">#指定账户权限配置文件</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p> <img src="/2021/03/14/svn/1608463-20190528115404201-1593471956.png"></p>
+<h2 id="5-启动svn"><a href="#5、启动svn" class="headerlink" title="5、启动svn"></a>5、启动svn</h2><p>本人建议指定端口的启动方式，如果建立多个仓库，也便于管理。</p>
+<p>svn默认端口为3690，需要在防火墙添加才可在svn客户端访问</p>
+<p>当然，云服务器可以直接在安全组中配置防火墙</p>
+<p>启动命令：</p>
+<blockquote>
+<p> svnserve -d -r /var/svn/repository/ –listen-port 3690</p>
+</blockquote>
+<p>建立多个的话可以选择用3691等其他端口启动</p>
+<h2 id="6查看svn进程"><a href="#6-查看svn进程" class="headerlink" title="6.查看svn进程"></a>6.查看svn进程</h2><blockquote>
+<p>ps -ef|grep svn</p>
+</blockquote>
+<p>可以看到服务启动成功，想要重新启动则kill -9 pid，再重新使用</p>
+<blockquote>
+<p>svnserve -d -r /opt/svn/repository –listen-port 3691</p>
+</blockquote>
+<p>命令启动</p>
+<p><img src="/2021/03/14/svn/1608463-20190528120008423-631669417.png"></p>
+<p> 这时候，用svn客户端连接会发现svn://ip:port/opt/svn/repository无法使用，这是因为linux没有开放该端口，需要手动添加；</p>
+<p>步骤如下：</p>
+<p>vi /etc/sysconfig/iptables,开放新端口</p>
+<p><img src="/2021/03/14/svn/1608463-20190528120647098-2073087851.png"></p>
+<p>重启防火墙</p>
+<p>service iptables restart</p>
+<p>重新使用客户端就可以正常连接了！</p>
+<h2 id="7客户端连接"><a href="#7-客户端连接" class="headerlink" title="7.客户端连接"></a>7.客户端连接</h2><p>推荐使用TortoiseSVN <a target="_blank" rel="noopener" href="https://tortoisesvn.net/">https://tortoisesvn.net/</a></p>
+<h3 id="1-安装svn客户端一路next即可"><a href="#1、-安装svn客户端，一路next即可" class="headerlink" title="1、 安装svn客户端，一路next即可"></a>1、 安装svn客户端，一路next即可</h3><h3 id="2-新建文件夹右键-check-out"><a href="#2、-新建文件夹，右键-check-out" class="headerlink" title="2、 新建文件夹，右键 check out"></a>2、 新建文件夹，右键 check out</h3><p><img src="/2021/03/14/svn/clip_image002.jpg"></p>
+<h3 id="3-输入-url"><a href="#3、-输入-url-》" class="headerlink" title="3、 输入 url =》"></a>3、 输入 url =》</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">svn://ip:3690   <span class="comment">#ip+端口号</span></span><br><span class="line"><span class="comment">#例如  svn://106.15.250.152:3690 </span></span><br></pre></td></tr></table></figure>
+
+<p>新建你本地的svn仓库， 目标文件夹（必须是空的）</p>
+<p><img src="/2021/03/14/svn/clip_image004.jpg"></p>
+<h3 id="4-用户名密码都是-usst"><a href="#4、-用户名密码都是-usst" class="headerlink" title="4、 用户名密码都是 usst"></a>4、 用户名密码都是 usst</h3><h3 id="5-svn操作"><a href="#5、-Svn操作" class="headerlink" title="5、 Svn操作"></a>5、 Svn操作</h3><p><img src="/2021/03/14/svn/clip_image006.jpg"></p>
+<p>右键根目录</p>
+<h4 id="1-update-更新到本地"><a href="#1、-update-》更新到本地" class="headerlink" title="1、 update =》更新到本地"></a>1、 update =》更新到本地</h4><p>同名文件会覆盖本地的文件</p>
+<h4 id="2-commit-上传到服务器"><a href="#2、-commit-》上传到服务器" class="headerlink" title="2、 commit =》上传到服务器"></a>2、 commit =》上传到服务器</h4><p><img src="/2021/03/14/svn/clip_image008.jpg" alt="img"></p>
+<p>点击ALL =》全选  =》ok </p>
+<p>正常来说，你的仓库文件夹上有特殊标记（红点，或者绿点），就表明在正常运出行了</p>
+<p><img src="/2021/03/14/svn/image-20210314201246127.png"></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>JJZhou
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://zhouzhe111.github.io/2021/03/14/svn/" title="svn服务器的搭建（centos7）">http://zhouzhe111.github.io/2021/03/14/svn/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/zhouzhe111/zhouzhe111.github.io/">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">rss</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/14/ftp/" rel="prev" title="ftp服务器的简单搭建（centos7），并且配置虚拟用户登录">
+      <i class="fa fa-chevron-left"></i> ftp服务器的简单搭建（centos7），并且配置虚拟用户登录
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%A3%80%E6%9F%A5%E7%B3%BB%E7%BB%9F%E6%98%AF%E5%90%A6%E5%B7%B2%E7%BB%8F%E5%AE%89%E8%A3%85%E5%A6%82%E6%9E%9C%E5%AE%89%E8%A3%85%E5%B0%B1%E5%8D%B8%E8%BD%BD"><span class="nav-text">1、检查系统是否已经安装如果安装就卸载</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5"><span class="nav-text">检查：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%B8%E8%BD%BD"><span class="nav-text">卸载：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85"><span class="nav-text">2、安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%BB%BA%E7%AB%8Bsvn%E5%BA%93%E6%96%87%E4%BB%B6%E4%BD%8D%E7%BD%AE%E5%8F%AF%E8%87%AA%E7%94%B1"><span class="nav-text">3、建立SVN库（文件位置可自由）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%BB%93%E5%BA%93%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-text">创建仓库文件夹：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8svn%E7%AE%A1%E7%90%86%E5%91%98%E8%BA%AB%E4%BB%BD%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E4%BB%93%E5%BA%93"><span class="nav-text">用svn管理员身份创建一个仓库：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E6%9D%83%E9%99%90%E9%85%8D%E7%BD%AE"><span class="nav-text">4、权限配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1authz%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE%E8%AE%BE%E7%BD%AE%E5%93%AA%E4%BA%9B%E7%94%A8%E6%88%B7%E5%8F%AF%E4%BB%A5%E8%AE%BF%E9%97%AE%E5%93%AA%E4%BA%9B%E7%9B%AE%E5%BD%95%E8%BF%9B%E5%85%A5varsvnrepositoryconf%E4%B8%8A%E9%9D%A2%E7%94%9F%E6%88%90%E7%9A%84%E6%96%87%E4%BB%B6%E5%A4%B9%E4%B8%8B"><span class="nav-text">（1）authz文件配置，设置哪些用户可以访问哪些目录：进入&#x2F;var&#x2F;svn&#x2F;repository&#x2F;conf上面生成的文件夹下，</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2passwd%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE-%E4%B8%BB%E8%A6%81%E6%B7%BB%E5%8A%A0%E7%94%A8%E6%88%B7%E5%90%8D%E5%92%8C%E5%AF%86%E7%A0%81%E4%BE%8B%E5%A6%82"><span class="nav-text">（2）passwd文件配置 主要添加用户名和密码，例如：：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3svnserveconf-%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE-%E9%85%8D%E7%BD%AE%E8%AE%BF%E9%97%AE%E6%9D%83%E9%99%90"><span class="nav-text">（3）svnserve.conf 文件配置 配置访问权限</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E5%90%AF%E5%8A%A8svn"><span class="nav-text">5、启动svn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6%E6%9F%A5%E7%9C%8Bsvn%E8%BF%9B%E7%A8%8B"><span class="nav-text">6.查看svn进程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5"><span class="nav-text">7.客户端连接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85svn%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%80%E8%B7%AFnext%E5%8D%B3%E5%8F%AF"><span class="nav-text">1、 安装svn客户端，一路next即可</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%96%B0%E5%BB%BA%E6%96%87%E4%BB%B6%E5%A4%B9%E5%8F%B3%E9%94%AE-check-out"><span class="nav-text">2、 新建文件夹，右键 check out</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%BE%93%E5%85%A5-url"><span class="nav-text">3、 输入 url &#x3D;》</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%94%A8%E6%88%B7%E5%90%8D%E5%AF%86%E7%A0%81%E9%83%BD%E6%98%AF-usst"><span class="nav-text">4、 用户名密码都是 usst</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-svn%E6%93%8D%E4%BD%9C"><span class="nav-text">5、 Svn操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-update-%E6%9B%B4%E6%96%B0%E5%88%B0%E6%9C%AC%E5%9C%B0"><span class="nav-text">1、 update &#x3D;》更新到本地</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-commit-%E4%B8%8A%E4%BC%A0%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-text">2、 commit &#x3D;》上传到服务器</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="JJZhou"
+      src="/uploads/my.jpg">
+  <p class="site-author-name" itemprop="name">JJZhou</p>
+  <div class="site-description" itemprop="description">真実はいつも一つ</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhouzhe111/zhouzhe111.github.io" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhouzhe111&#x2F;zhouzhe111.github.io" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">JJZhou</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">27k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">25 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,255' opacity='0.4' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'nLQg4SEQoxHjUFWWCIkTwMUk-gzGzoHsz',
+      appKey     : 'jNqQMcLwqqKXXxxAIP29zMfT',
+      placeholder: "欢迎畅所欲言",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+   <!-- 花火 -->
+<!-- <script type="text/javascript" src="/js/src/fireworks.js"></script> -->
+<!-- 社会主义核心价值观 -->
+<!-- <script type="text/javascript" src="/js/src/clicksocialvalue.js"></script> -->
+  <!-- 页面点击小红心 -->
+<!-- <script type="text/javascript" src="/js/src/clicklove.js"></script> -->  
+<!-- 雪花特效2 -->
+<script type="text/javascript" src="/js/snow2.js"></script>
+  
+  
+    <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas>
+    <script src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+    <script src="/js/cursor/explosion.min.js"></script>
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"scale":1,"hHeadPos":0.5,"vHeadPos":0.618,"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"superSample":2,"width":150,"height":300,"position":"right","hOffset":0,"vOffset":-10},"mobile":{"show":false,"scale":0.05},"react":{"opacityDefault":0.7,"opacityOnHover":0.2}});</script></body>
+</html>
