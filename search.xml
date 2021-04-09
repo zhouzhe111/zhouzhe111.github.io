@@ -552,6 +552,95 @@
       </categories>
   </entry>
   <entry>
+    <title>（leetcode）玩转链表</title>
+    <url>/2021/04/09/leetcode2/</url>
+    <content><![CDATA[<p>链表本质上就是一个个物理内存不连续的结点，包含储存的数据以及指向下一个结点的指针（单链表），或者包含指向上一个和下一个结点的两个指针（双链表）。</p>
+<span id="more"></span>
+
+<hr>
+<!-- toc -->
+
+<ul>
+<li><a href="#1-%E4%B8%A4%E4%B8%A4%E4%BA%A4%E6%8D%A2%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E8%8A%82%E7%82%B9%E4%B8%AD%E7%AD%89httpsleetcode-cncomproblemsswap-nodes-in-pairs">1、<a href="https://leetcode-cn.com/problems/swap-nodes-in-pairs/">两两交换链表中的节点（中等）</a></a><ul>
+<li><a href="#%E9%A2%98%E8%A7%A3%E9%93%BE%E6%8E%A5httpsleetcode-cncomproblemsswap-nodes-in-pairssolutionwan-zhuan-lian-biao-ji-bai-100-by-qvtqnz-jtvt">题解链接</a></li>
+<li><a href="#%E9%A2%98%E7%9B%AE%E7%BB%99%E5%AE%9A%E4%B8%80%E4%B8%AA%E9%93%BE%E8%A1%A8%E4%B8%A4%E4%B8%A4%E4%BA%A4%E6%8D%A2%E5%85%B6%E4%B8%AD%E7%9B%B8%E9%82%BB%E7%9A%84%E8%8A%82%E7%82%B9%E5%B9%B6%E8%BF%94%E5%9B%9E%E4%BA%A4%E6%8D%A2%E5%90%8E%E7%9A%84%E9%93%BE%E8%A1%A8">题目：给定一个链表，两两交换其中相邻的节点，并返回交换后的链表。</a></li>
+<li><a href="#%E6%80%9D%E8%B7%AF">思路</a></li>
+</ul>
+</li>
+<li><a href="#2-k-%E4%B8%AA%E4%B8%80%E7%BB%84%E7%BF%BB%E8%BD%AC%E9%93%BE%E8%A1%A8%E5%9B%B0%E9%9A%BEhttpsleetcode-cncomproblemsreverse-nodes-in-k-group">2、<a href="https://leetcode-cn.com/problems/reverse-nodes-in-k-group/">K 个一组翻转链表（困难）</a></a><ul>
+<li><a href="#%E9%A2%98%E8%A7%A3%E9%93%BE%E6%8E%A5httpsleetcode-cncomproblemsreverse-nodes-in-k-groupsolutionkge-yi-zu-fan-zhuan-ji-bai-100-by-qvtqnz-upvm-1">题解链接</a></li>
+<li><a href="#%E9%A2%98%E7%9B%AE">题目</a></li>
+<li><a href="#%E6%80%9D%E8%B7%AF-1">思路</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+
+<hr>
+<h1 id="1-两两交换链表中的节点中等"><a href="#1、两两交换链表中的节点（中等）" class="headerlink" title="1、两两交换链表中的节点（中等）"></a>1、<a href="https://leetcode-cn.com/problems/swap-nodes-in-pairs/">两两交换链表中的节点（中等）</a></h1><h2 id="题解链接"><a href="#题解链接" class="headerlink" title="题解链接"></a><a href="https://leetcode-cn.com/problems/swap-nodes-in-pairs/solution/wan-zhuan-lian-biao-ji-bai-100-by-qvtqnz-jtvt/">题解链接</a></h2><p><img src="/2021/04/09/leetcode2/image-20210409231314028.png"></p>
+<h2 id="题目给定一个链表两两交换其中相邻的节点并返回交换后的链表"><a href="#题目：给定一个链表，两两交换其中相邻的节点，并返回交换后的链表。" class="headerlink" title="题目：给定一个链表，两两交换其中相邻的节点，并返回交换后的链表。"></a>题目：给定一个链表，两两交换其中相邻的节点，并返回交换后的链表。</h2><p>你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。</p>
+<p>示例 1：</p>
+<p>输入：head = [1,2,3,4]<br>输出：[2,1,4,3]</p>
+<p><img src="/2021/04/09/leetcode2/swap_ex1.jpg"></p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>题意是每两个就交换一次，并且实质进行交换结点本身而不是改变值</p>
+<p>很显然，最直白的思路就是往后遍历，每两个节点进行一次交换，为了节省空间，用两个指针保存下一次的节点位置，</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ListNode <span class="title">swapPairs</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (head == <span class="keyword">null</span> || head.next == <span class="keyword">null</span>) <span class="keyword">return</span> head; <span class="comment">// 如果少于两个节点，不需要交换直接返回</span></span><br><span class="line">        ListNode ans = head.next;<span class="comment">//第二个节点就是头结点</span></span><br><span class="line">        head.next = ans.next;  <span class="comment">//把第三个节点（不管是不是null）接到第一个节点后面</span></span><br><span class="line">        ans.next = head;  <span class="comment">//头结点接到第二个节点后面，这样前两个就交换成功，并且找到了返回的节点</span></span><br><span class="line">        ListNode cur = head.next; <span class="comment">//标记连着的两个节点的第一个节点</span></span><br><span class="line">        <span class="keyword">while</span> (cur != <span class="keyword">null</span> &amp;&amp; cur.next != <span class="keyword">null</span>) &#123;<span class="comment">//每当找到两个节点，就循环一次</span></span><br><span class="line">            ListNode next = cur.next;  <span class="comment">//标记循环中的第二个节点</span></span><br><span class="line">            cur.next = next.next;  <span class="comment">//把循环中的两个节点之后的全部接到第一个节点之后</span></span><br><span class="line">            head.next = next;   <span class="comment">//第二个节点接到head后面（head表示的是循环前的那个节点）</span></span><br><span class="line">            next.next = cur;  <span class="comment">//第一个节点放到第二个节点之后，完成交换</span></span><br><span class="line">            head = cur;   <span class="comment">//为下次一循环准备</span></span><br><span class="line">            cur = cur.next;  <span class="comment">//为下次一循环准备</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="2-k-个一组翻转链表困难"><a href="#2、K-个一组翻转链表（困难）" class="headerlink" title="2、K 个一组翻转链表（困难）"></a>2、<a href="https://leetcode-cn.com/problems/reverse-nodes-in-k-group/">K 个一组翻转链表（困难）</a></h1><h2 id="题解链接"><a href="#题解链接-1" class="headerlink" title="题解链接"></a><a href="https://leetcode-cn.com/problems/reverse-nodes-in-k-group/solution/kge-yi-zu-fan-zhuan-ji-bai-100-by-qvtqnz-upvm/">题解链接</a></h2><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>给你一个链表，每 k 个节点一组进行翻转，请你返回翻转后的链表。</p>
+<p>k 是一个正整数，它的值小于或等于链表的长度。</p>
+<p>如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。</p>
+<p>进阶：</p>
+<p>你可以设计一个只使用常数额外空间的算法来解决此问题吗？<br>你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。</p>
+<p><img src="/2021/04/09/leetcode2/reverse_ex1.jpg"></p>
+<p>这和两两交换是一个道理</p>
+<p>就是把2变成k而已</p>
+<p><img src="/2021/04/09/leetcode2/image-20210410000137839.png"></p>
+<h2 id="思路"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h2><p>每次寻找k个存在的结点，然后翻转</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">       ListNode[] cnt;<span class="comment">//常数空间，翻转时利用的额外空间</span></span><br><span class="line"></span><br><span class="line">       <span class="function"><span class="keyword">public</span> ListNode <span class="title">reverseKGroup</span><span class="params">(ListNode head, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">           ListNode root = <span class="keyword">new</span> ListNode(<span class="number">0</span>, head);<span class="comment">//定义一个head之前的结点，使得可以从头到尾循环</span></span><br><span class="line">           ListNode before = <span class="keyword">null</span>; <span class="comment">// 记录每一次每组k个结点之前的那个节点</span></span><br><span class="line">           <span class="keyword">if</span> (judge(head, k)) &#123;  <span class="comment">//</span></span><br><span class="line">               before = helper(root, k);</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">while</span> (judge(before.next, k)) &#123;<span class="comment">//每当找到k个节点，就循环一次,进行翻转</span></span><br><span class="line">               before = helper(before, k);</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">return</span> root.next; <span class="comment">//root是新加的结点，那root之后的那个节点就是翻转之后的头结点</span></span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">//判断从head开始的k个结点是否满足k个</span></span><br><span class="line">       <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">judge</span><span class="params">(ListNode head, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">           ListNode sssss = head;</span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = k; i &gt; <span class="number">0</span>; i--) &#123;</span><br><span class="line">               <span class="keyword">if</span> (sssss == <span class="keyword">null</span>)</span><br><span class="line">                   <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">               sssss = sssss.next;</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">//从root之后的k和结点进行翻转</span></span><br><span class="line">       <span class="function"><span class="keyword">private</span> ListNode <span class="title">helper</span><span class="params">(ListNode root, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">           ListNode per = root;</span><br><span class="line">           cnt = <span class="keyword">new</span> ListNode[k];  <span class="comment">//初始化</span></span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; k; i++) &#123;  <span class="comment">//用数组记录</span></span><br><span class="line">               cnt[i] = per.next;</span><br><span class="line">               per = per.next;</span><br><span class="line">           &#125;</span><br><span class="line">           cnt[<span class="number">0</span>].next = cnt[k - <span class="number">1</span>].next; <span class="comment">//先把最后一个结点的后一个接到第一个节点的后面</span></span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; k; i++) &#123;  <span class="comment">//再依次把前一个节点接到后一个节点的后面</span></span><br><span class="line">               cnt[i].next = cnt[i - <span class="number">1</span>];</span><br><span class="line">           &#125;</span><br><span class="line">           root.next = cnt[k - <span class="number">1</span>];  <span class="comment">//最后把最后一个节点接到root之后，便成了这组节点的第一个</span></span><br><span class="line">           <span class="keyword">return</span> cnt[<span class="number">0</span>]; <span class="comment">//返回这组节点的最后一个，方便下一次循环</span></span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>（leetcode）螺旋矩阵篇通用解法</title>
+    <url>/2021/04/09/leetcode1/</url>
+    <content><![CDATA[<p>（leetcode）螺旋矩阵篇通用解法，螺旋矩阵-顾名思义，就是在一个二维矩阵中旋转赋值这么一种操作，可通过设置状态量来解决在一个方向上到头时，转向解决问题的方法。</p>
+<span id="more"></span>
+
+<hr>
+<!-- toc -->
+
+<ul>
+<li><a href="#1-%E8%9E%BA%E6%97%8B%E7%9F%A9%E9%98%B5-iihttpsleetcode-cncomproblemsspiral-matrix-ii">1、<a href="https://leetcode-cn.com/problems/spiral-matrix-ii/">螺旋矩阵 II</a></a><ul>
+<li><a href="#%E9%A2%98%E8%A7%A3%E5%8E%9F%E6%96%87%E9%93%BE%E6%8E%A5java%E5%87%BB%E8%B4%A5100httpsleetcode-cncomproblemsspiral-matrix-iisolutionji-bai-100-by-qvtqnzbnxm-1roj">题解原文链接（java击败100%）</a><ul>
+<li><a href="#%E9%A2%98%E7%9B%AE">题目：</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+
+<hr>
+<h1 id="1-螺旋矩阵-ii"><a href="#1、螺旋矩阵-II" class="headerlink" title="1、螺旋矩阵 II"></a>1、<a href="https://leetcode-cn.com/problems/spiral-matrix-ii/">螺旋矩阵 II</a></h1><h2 id="题解原文链接java击败100"><a href="#题解原文链接（java击败100-）" class="headerlink" title="题解原文链接（java击败100%）"></a><a href="https://leetcode-cn.com/problems/spiral-matrix-ii/solution/ji-bai-100-by-qvtqnzbnxm-1roj/">题解原文链接（java击败100%）</a></h2><h3 id="题目"><a href="#题目：" class="headerlink" title="题目："></a>题目：</h3><p>给你一个正整数 n ，生成一个包含 1 到 n2 所有元素，且元素按顺时针顺序螺旋排列的 n x n 正方形矩阵 matrix 。</p>
+<p>示例 1：</p>
+<p>输入：n = 3<br>输出：[[1,2,3],[8,9,4],[7,6,5]]</p>
+<p><img src="/2021/04/09/leetcode1/spiraln.jpg"></p>
+<p>思路就是每次添加当前的数，同时用一个数组<strong>isVisited</strong>记录已经到达过的点的位置，然后判断这个方向（初始方向向右）还有没有新点</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">1、已经到达边界，如1-&gt;2-&gt;3,3右边已经没有位置了</span><br><span class="line">2、在往前的点之前已经到达过，如7-&gt;8，这个方向上的1是起点，已经到达过</span><br></pre></td></tr></table></figure>
+
+<p>如果没有的话，按照顺时针调整方向（point和pair[]），循环往复，直到计数到n^2结束</p>
+<p>其中方向<strong>point</strong>的切换要注意</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[][] generateMatrix(<span class="keyword">int</span> n) &#123;</span><br><span class="line">        <span class="keyword">int</span>[][] ans = <span class="keyword">new</span> <span class="keyword">int</span>[n][n];</span><br><span class="line">        <span class="keyword">int</span>[][] pair = <span class="keyword">new</span> <span class="keyword">int</span>[][]&#123;&#123;<span class="number">0</span>, <span class="number">1</span>&#125;, &#123;<span class="number">1</span>, <span class="number">0</span>&#125;, &#123;<span class="number">0</span>, -<span class="number">1</span>&#125;, &#123;-<span class="number">1</span>, <span class="number">0</span>&#125;&#125;;<span class="comment">//方向，依次是向右，向下，向左，向上</span></span><br><span class="line">        <span class="keyword">int</span> point = <span class="number">0</span>;<span class="comment">//初始是向右走的</span></span><br><span class="line">        <span class="keyword">boolean</span>[][] isVisited = <span class="keyword">new</span> <span class="keyword">boolean</span>[n][n];<span class="comment">//标记到达过的位置</span></span><br><span class="line">        <span class="keyword">int</span> count = <span class="number">0</span>;<span class="comment">//计数</span></span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (count &lt; n * n) &#123;</span><br><span class="line">            ans[i][j] = ++count;</span><br><span class="line">            isVisited[i][j] = <span class="keyword">true</span>;</span><br><span class="line">            <span class="keyword">if</span> (count == n * n) <span class="keyword">return</span> ans;</span><br><span class="line">            <span class="keyword">while</span> (i + pair[point][<span class="number">0</span>] &gt;= n || i + pair[point][<span class="number">0</span>] &lt; <span class="number">0</span>  <span class="comment">//i改变后是不是满足条件</span></span><br><span class="line">                    || j + pair[point][<span class="number">1</span>] &gt;= n || j + pair[point][<span class="number">1</span>] &lt; <span class="number">0</span>  <span class="comment">//j改变后是不是满足条</span></span><br><span class="line">                    || isVisited[i + pair[point][<span class="number">0</span>]][j + pair[point][<span class="number">1</span>]]) &#123; <span class="comment">//节点访问过</span></span><br><span class="line">                point = point == <span class="number">3</span> ? <span class="number">0</span> : point + <span class="number">1</span>; <span class="comment">//改变方向</span></span><br><span class="line">            &#125;</span><br><span class="line">            i = i + pair[point][<span class="number">0</span>]; <span class="comment">//新位置</span></span><br><span class="line">            j = j + pair[point][<span class="number">1</span>]; <span class="comment">//新位置</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+  </entry>
+  <entry>
     <title>linux基本命令</title>
     <url>/2021/04/09/linux1/</url>
     <content><![CDATA[<p>linux基本命令</p>
@@ -1479,9 +1568,9 @@
       </categories>
   </entry>
   <entry>
-    <title>jav基础</title>
+    <title>java基础</title>
     <url>/2021/03/09/javajichu/</url>
-    <content><![CDATA[<p>jav基础，面试考点归纳，更新中。。。</p>
+    <content><![CDATA[<p>java基础，面试考点归纳，更新中。。。</p>
 <span id="more"></span>
 
 <hr>
@@ -1778,7 +1867,7 @@
   <entry>
     <title>vue的初步入门及使用</title>
     <url>/2021/03/09/vue1/</url>
-    <content><![CDATA[<p>Vue (读音 /vjuː/，类似于 <strong>view</strong>) 是一套用于构建用户界面的<strong>渐进式框架</strong>。与其它大型框架不同的是，Vue 被设计为可以自底向上逐层应用。Vue 的核心库只关注视图层，不仅易于上手，还便于与第三方库或既有项目整合。另一方面，当与<a href="https://cn.vuejs.org/v2/guide/single-file-components.html">现代化的工具链</a>以及各种<a href="https://github.com/vuejs/awesome-vue#libraries--plugins">支持类库</a>结合使用时，Vue 也完全能够为复杂的单页应用提供驱动。</p>
+    <content><![CDATA[<p>Vue  是一套用于构建用户界面的<strong>渐进式框架</strong>。与其它大型框架不同的是，Vue 被设计为可以自底向上逐层应用。Vue 的核心库只关注视图层，不仅易于上手，还便于与第三方库或既有项目整合。另一方面，当与<a href="https://cn.vuejs.org/v2/guide/single-file-components.html">现代化的工具链</a>以及各种<a href="https://github.com/vuejs/awesome-vue#libraries--plugins">支持类库</a>结合使用时，Vue 也完全能够为复杂的单页应用提供驱动。</p>
 <span id="more"></span>
 
 <hr>
