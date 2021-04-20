@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhouzhe111.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="使用贪心算法的局部最优解思路解决问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="（leetcode）贪心算法">
+<meta property="og:url" content="http://zhouzhe111.github.io/2021/04/19/leetcode3/index.html">
+<meta property="og:site_name" content="周吉吉的博客">
+<meta property="og:description" content="使用贪心算法的局部最优解思路解决问题">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://zhouzhe111.github.io/2021/04/19/leetcode3/untitled-diagram.png">
+<meta property="article:published_time" content="2021-04-19T14:48:25.000Z">
+<meta property="article:modified_time" content="2021-04-20T06:28:34.420Z">
+<meta property="article:author" content="JJZhou">
+<meta property="article:tag" content="后端、程序员">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://zhouzhe111.github.io/2021/04/19/leetcode3/untitled-diagram.png">
+
+<link rel="canonical" href="http://zhouzhe111.github.io/2021/04/19/leetcode3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>（leetcode）贪心算法 | 周吉吉的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="周吉吉的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">周吉吉的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">周吉吉的博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/zhouzhe111/zhouzhe111.github.io/" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zhouzhe111.github.io/2021/04/19/leetcode3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/my.jpg">
+      <meta itemprop="name" content="JJZhou">
+      <meta itemprop="description" content="真実はいつも一つ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="周吉吉的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          （leetcode）贪心算法
+        </h1>
+
+        <div class="post-meta">
+
+  <i class="fa fa-thumb-tack"></i>
+  <font color=7D26CD>置顶</font>
+  <span class="post-meta-divider">|</span>
+
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-19 22:48:25" itemprop="dateCreated datePublished" datetime="2021-04-19T22:48:25+08:00">2021-04-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-20 14:28:34" itemprop="dateModified" datetime="2021-04-20T14:28:34+08:00">2021-04-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/leetcode/" itemprop="url" rel="index"><span itemprop="name">leetcode</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/04/19/leetcode3/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/04/19/leetcode3/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>使用贪心算法的局部最优解思路解决问题</p>
+<span id="more"></span>
+
+<hr>
+<!-- toc -->
+
+<ul>
+<li><a href="#1-%E7%BD%91%E7%BB%9C%E4%BF%A1%E5%8F%B7%E6%9C%80%E5%A5%BD%E7%9A%84%E5%9D%90%E6%A0%87%E4%B8%AD%E7%AD%89httpsleetcode-cncomproblemscoordinate-with-maximum-network-quality">1、<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/coordinate-with-maximum-network-quality/">网络信号最好的坐标（中等）</a></a><ul>
+<li><a href="#%E9%A2%98%E8%A7%A3%E9%93%BE%E6%8E%A5httpsleetcode-cncomproblemscoordinate-with-maximum-network-qualitysolutiontan-xin-by-qvtqnzbnxm-yn8j">题解链接</a></li>
+</ul>
+</li>
+<li><a href="#%E9%A2%98%E7%9B%AE">题目：</a><ul>
+<li><a href="#%E7%A4%BA%E4%BE%8B-1">示例 1：</a></li>
+<li><a href="#%E6%80%9D%E8%B7%AF">思路</a></li>
+</ul>
+</li>
+<li><a href="#2-%E6%8C%89%E8%A6%81%E6%B1%82%E8%A1%A5%E9%BD%90%E6%95%B0%E7%BB%84%E5%9B%B0%E9%9A%BEhttpsleetcode-cncomproblemspatching-array">2、<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/patching-array/">按要求补齐数组(困难)</a></a><ul>
+<li><a href="#%E9%A2%98%E8%A7%A3%E9%93%BE%E6%8E%A5httpsleetcode-cncomproblemscoordinate-with-maximum-network-qualitysolutiontan-xin-by-qvtqnzbnxm-yn8j-1">题解链接</a></li>
+</ul>
+</li>
+<li><a href="#%E9%A2%98%E7%9B%AE-1">题目：</a><ul>
+<li><a href="#%E7%A4%BA%E4%BE%8B-1-1">示例 1：</a></li>
+<li><a href="#%E6%80%9D%E8%B7%AF-1">思路</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+
+<hr>
+<h1 id="1-网络信号最好的坐标中等"><a href="#1、网络信号最好的坐标（中等）" class="headerlink" title="1、网络信号最好的坐标（中等）"></a>1、<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/coordinate-with-maximum-network-quality/">网络信号最好的坐标（中等）</a></h1><h2 id="题解链接"><a href="#题解链接" class="headerlink" title="题解链接"></a><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/coordinate-with-maximum-network-quality/solution/tan-xin-by-qvtqnzbnxm-yn8j/">题解链接</a></h2><h1 id="题目"><a href="#题目：" class="headerlink" title="题目："></a>题目：</h1><p>给你一个数组 <code>towers</code> 和一个整数 <code>radius</code> ，数组中包含一些网络信号塔，其中 <code>towers[i] = [xi, yi, qi]</code> 表示第 <code>i</code> 个网络信号塔的坐标是 <code>(xi, yi)</code> 且信号强度参数为 <code>qi</code> 。所有坐标都是在 X-Y 坐标系内的 <strong>整数</strong> 坐标。两个坐标之间的距离用 <strong>欧几里得距离</strong> 计算。</p>
+<p>整数 <code>radius</code> 表示一个塔 <strong>能到达</strong> 的 <strong>最远距离</strong> 。如果一个坐标跟塔的距离在 <code>radius</code> 以内，那么该塔的信号可以到达该坐标。在这个范围以外信号会很微弱，所以 <code>radius</code> 以外的距离该塔是 <strong>不能到达的</strong> 。</p>
+<p>如果第 <code>i</code> 个塔能到达 <code>(x, y)</code> ，那么该塔在此处的信号为 <code>⌊qi / (1 + d)⌋</code> ，其中 <code>d</code> 是塔跟此坐标的距离。一个坐标的 <strong>网络信号</strong> 是所有 <strong>能到达</strong> 该坐标的塔的信号强度之和。</p>
+<p>请你返回 <strong>网络信号</strong> 最大的整数坐标点。如果有多个坐标网络信号一样大，请你返回字典序最小的一个坐标。</p>
+<p> 注意：</p>
+<p>坐标 (x1, y1) 字典序比另一个坐标 (x2, y2) 小：要么 x1 &lt; x2 ，要么 x1 == x2 且 y1 &lt; y2 。<br>⌊val⌋ 表示小于等于 val 的最大整数（向下取整函数）。</p>
+<h2 id="示例-1"><a href="#示例-1：" class="headerlink" title="示例 1："></a>示例 1：</h2><p>输入：towers = [[1,2,5],[2,1,7],[3,1,9]], radius = 2<br>输出：[2,1]<br>解释：<br>坐标 (2, 1) 信号强度之和为 13</p>
+<ul>
+<li>塔 (2, 1) 强度参数为 7 ，在该点强度为 ⌊7 / (1 + sqrt(0)⌋ = ⌊7⌋ = 7</li>
+<li>塔 (1, 2) 强度参数为 5 ，在该点强度为 ⌊5 / (1 + sqrt(2)⌋ = ⌊2.07⌋ = 2</li>
+<li>塔 (3, 1) 强度参数为 9 ，在该点强度为 ⌊9 / (1 + sqrt(1)⌋ = ⌊4.5⌋ = 4<br>没有别的坐标有更大的信号强度。</li>
+</ul>
+<p><img src="/2021/04/19/leetcode3/untitled-diagram.png"></p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>这道题思路很明显，就是使用贪心的解法，每次计算一个点的网络信号，然后跟最最大的比较，并且更新最大值</p>
+<p>这样便利完以后，得到的就是全部位置的最大值</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] bestCoordinate(<span class="keyword">int</span>[][] towers, <span class="keyword">int</span> radius) &#123;</span><br><span class="line">        <span class="keyword">int</span> ans = <span class="number">0</span>;<span class="comment">//最大值</span></span><br><span class="line">        <span class="keyword">int</span> x = <span class="number">0</span>, y = <span class="number">0</span>;<span class="comment">//记录最大值的坐标</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">51</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">51</span>; j++) &#123;</span><br><span class="line">                <span class="keyword">int</span> helper = helper(towers, i, j, radius);<span class="comment">//当前坐标的信号强度</span></span><br><span class="line">                <span class="keyword">if</span> (ans &lt; helper) &#123; <span class="comment">//入座比最大值还要大，更新最大值</span></span><br><span class="line">                    ans = helper;</span><br><span class="line">                    x = i;</span><br><span class="line">                    y = j;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;x, y&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//i:横坐标 j:纵坐标 radius:半径</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">helper</span><span class="params">(<span class="keyword">int</span>[][] towers, <span class="keyword">int</span> i, <span class="keyword">int</span> j, <span class="keyword">int</span> radius)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span>[] loc : towers) &#123;<span class="comment">//遍历</span></span><br><span class="line">            <span class="keyword">double</span> d = Math.sqrt((i - loc[<span class="number">0</span>]) * (i - loc[<span class="number">0</span>]) + (j - loc[<span class="number">1</span>]) * (j - loc[<span class="number">1</span>]));<span class="comment">//计算每一个位置但目标点的距离</span></span><br><span class="line">            <span class="keyword">if</span> (d &gt; radius)<span class="comment">//超过最大值就没有信号</span></span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            ans += (<span class="keyword">int</span>) Math.floor(<span class="number">1.0</span> * loc[<span class="number">2</span>] / (<span class="number">1</span> + d));<span class="comment">//计算信号强度，并且累加到目标点上</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;<span class="comment">//返回累加的信号强度</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="2-按要求补齐数组困难"><a href="#2、按要求补齐数组-困难" class="headerlink" title="2、按要求补齐数组(困难)"></a>2、<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/patching-array/">按要求补齐数组(困难)</a></h1><h2 id="题解链接"><a href="#题解链接-1" class="headerlink" title="题解链接"></a><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/coordinate-with-maximum-network-quality/solution/tan-xin-by-qvtqnzbnxm-yn8j/">题解链接</a></h2><h1 id="题目"><a href="#题目：-1" class="headerlink" title="题目："></a>题目：</h1><p>给定一个已排序的正整数数组 nums，和一个正整数 n 。从 [1, n] 区间内选取任意个数字补充到 nums 中，使得 [1, n] 区间内的任何数字都可以用 nums 中某几个数字的和来表示。请输出满足上述要求的最少需要补充的数字个数。</p>
+<h2 id="示例-1"><a href="#示例-1：-1" class="headerlink" title="示例 1："></a>示例 1：</h2><p>输入: nums = [1,3], n = 6<br>输出: 1<br>解释:<br>根据 nums 里现有的组合 [1], [3], [1,3]，可以得出 1, 3, 4。<br>现在如果我们将 2 添加到 nums 中， 组合变为: [1], [2], [3], [1,3], [2,3], [1,2,3]。<br>其和可以表示数字 1, 2, 3, 4, 5, 6，能够覆盖 [1, 6] 区间里所有的数。<br>所以我们最少需要添加一个数字。</p>
+<h2 id="思路"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h2><p>可以这么理解，以[1,5,10]的例子为例: 我们从1开始遍历,并且维护一个指向nums的下标.一开始是1，而我们看到当前nums数组的第一个元素就是1,所以不需要其他操作.直接跳到2，并且让pos指向nums的第二个元素；</p>
+<p>现在,我们的目标数是2,但是当前pos指向的数却是5,显然我们只能自己填充一个2,所以让res+1;既然我们已经填过2了,而在2之前可以被覆盖的最长区间长度是1,所以当前可以遍历到的最大区间长度变成了3(即2 + 1);</p>
+<p>然后,我们可以忽略3,直接跳到4(因为上一步已经知道3在最大覆盖范围内了)。我们发现4同样比当前pos所指向的nums元素小,所以我们得填入4，即让res+1;既然已经填入4了,而我们知道在4之前可以覆盖的连续区间是(1-3),所以当前可以覆盖的最大区间被扩展到了7(即4 + 3)。</p>
+<p>接下来我们可以直接跳过5、6、7来到8,而当前pos所指向的元素是5,所以当前可覆盖的区间大小又可以加上5了(7+5 = 12),并让pos指向下一个元素</p>
+<p>最后我们跳过了7-12，从13开始遍历，这时候pos所指的元素是10,所以覆盖范围变成了12 + 10 = 22 &gt;20，说明可以完全覆盖指定区间了！</p>
+<p>到这里大概能够看出端倪 ：我们不断维持一个从1开始的可以被完全覆盖的区间,举个例子,当前可以完全覆盖区间是[1,k]，而当前pos所指向的nums中的元素为B,说明在B之前(因为是升序，所以都比B小)的所有元素之和可以映射到1—–k，而当我们把B也加入进去后，显然，可映射范围一定向右扩展了B个，也就是变成了1—k+B，这就是解题的思路</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minPatches</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> max = <span class="number">1</span>;<span class="comment">//记录可以得到的最大的值</span></span><br><span class="line">        <span class="keyword">int</span> nn = nums.length;</span><br><span class="line">        <span class="keyword">int</span> ans = <span class="number">0</span>, cur = <span class="number">0</span>;<span class="comment">//当前坐标</span></span><br><span class="line">        <span class="keyword">while</span> (max &lt;= n) &#123;</span><br><span class="line">            <span class="keyword">if</span> (cur &lt; nn &amp;&amp; nums[cur] &lt;= max) &#123;<span class="comment">//遍历到的值不超过最大的值，那么这个值就可以得到</span></span><br><span class="line">                max += nums[cur];<span class="comment">//扩充最大的值（之前可以到max，name现在可以在增加nums[cur]了）</span></span><br><span class="line">                cur++;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                max *= <span class="number">2</span>;<span class="comment">//之前可以到max，那么往nums中添加一个max，max就更新为2*max</span></span><br><span class="line">                ans++;<span class="comment">//此时天街了一个max进入nums，添加的数加一</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>JJZhou
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://zhouzhe111.github.io/2021/04/19/leetcode3/" title="（leetcode）贪心算法">http://zhouzhe111.github.io/2021/04/19/leetcode3/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/zhouzhe111/zhouzhe111.github.io/">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">rss</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/04/09/leetcode2/" rel="prev" title="（leetcode）玩转链表">
+      <i class="fa fa-chevron-left"></i> （leetcode）玩转链表
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E7%BD%91%E7%BB%9C%E4%BF%A1%E5%8F%B7%E6%9C%80%E5%A5%BD%E7%9A%84%E5%9D%90%E6%A0%87%E4%B8%AD%E7%AD%89"><span class="nav-text">1、网络信号最好的坐标（中等）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3%E9%93%BE%E6%8E%A5"><span class="nav-text">题解链接</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE"><span class="nav-text">题目：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B-1"><span class="nav-text">示例 1：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-text">思路</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E6%8C%89%E8%A6%81%E6%B1%82%E8%A1%A5%E9%BD%90%E6%95%B0%E7%BB%84%E5%9B%B0%E9%9A%BE"><span class="nav-text">2、按要求补齐数组(困难)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3%E9%93%BE%E6%8E%A5"><span class="nav-text">题解链接</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE"><span class="nav-text">题目：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B-1"><span class="nav-text">示例 1：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-text">思路</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="JJZhou"
+      src="/uploads/my.jpg">
+  <p class="site-author-name" itemprop="name">JJZhou</p>
+  <div class="site-description" itemprop="description">真実はいつも一つ</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhouzhe111/zhouzhe111.github.io" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhouzhe111&#x2F;zhouzhe111.github.io" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://stackoverflow.com/" title="StackOverflow → https:&#x2F;&#x2F;stackoverflow.com&#x2F;" rel="noopener" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>StackOverflow</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">JJZhou</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">134k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:02</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,255' opacity='0.4' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'nLQg4SEQoxHjUFWWCIkTwMUk-gzGzoHsz',
+      appKey     : 'jNqQMcLwqqKXXxxAIP29zMfT',
+      placeholder: "欢迎畅所欲言",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+
+   <!-- 花火 -->
+<!-- <script type="text/javascript" src="/js/src/fireworks.js"></script> -->
+<!-- 社会主义核心价值观 -->
+<!-- <script type="text/javascript" src="/js/src/clicksocialvalue.js"></script> -->
+  <!-- 页面点击小红心 -->
+<!-- <script type="text/javascript" src="/js/src/clicklove.js"></script> -->  
+<!-- 雪花特效2 -->
+<script type="text/javascript" src="/js/snow2.js"></script>
+  
+  
+    <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas>
+    <script src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script>
+    <script src="/js/cursor/explosion.min.js"></script>
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"scale":1,"hHeadPos":0.5,"vHeadPos":0.618,"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"superSample":2,"width":150,"height":300,"position":"right","hOffset":0,"vOffset":-10},"mobile":{"show":false,"scale":0.05},"react":{"opacityDefault":0.7,"opacityOnHover":0.2}});</script></body>
+</html>
